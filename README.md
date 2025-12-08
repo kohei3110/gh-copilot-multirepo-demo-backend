@@ -25,7 +25,7 @@ The project showcases how to use Copilot Orchestra to orchestrate multiple AI ag
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/kohei3110/gh-copilot-multirepo-demo-backend.git
    cd gh-copilot-multirepo-demo-backend
    ```
 
