@@ -23,7 +23,7 @@
 
 1. **リポジトリをクローン**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/kohei3110/gh-copilot-multirepo-demo-backend.git
    cd gh-copilot-multirepo-demo-backend
    ```
 
