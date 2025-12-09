@@ -356,15 +356,124 @@ From this exercise, you learn:
 
 ### Step 5.5: Further Improvements
 
-You can ask Copilot for additional improvements:
+After fixing the bug, you can request further improvements from Copilot Agent through GitHub Issues.
 
+#### Example 1: Improving Test Coverage
+
+1. Create a new issue on GitHub and select the "Feature Request (Copilot Agent Optimized)" or "Bug Report (Copilot Agent Optimized)" template.
+
+2. Fill out the issue with the following content:
+
+**Title:**
 ```
-Add unit tests for the bug fixes
+[Test] Add unit tests for validation bug fixes
 ```
 
+**Feature Summary / Bug Summary:**
 ```
-Make error messages more detailed and user-friendly
+Add comprehensive unit tests for the validation fixes in DELETE and PUT endpoints
 ```
+
+**Steps to Reproduce / Current Behavior:**
+```
+Currently, tests are missing for the following edge cases:
+- DELETE /todos/:id with a non-existent ID
+- PUT /todos/:id with an empty text string
+- PUT /todos/:id with an extremely long text string
+```
+
+**Expected Behavior / Feature Description:**
+```
+A test suite exists that covers all validation cases,
+ensuring that the fixed bugs do not reoccur
+```
+
+**Suspected Files / Target Files:**
+```
+- src/__tests__/server.test.ts (new or existing)
+- src/server.ts
+```
+
+**Constraints:**
+```
+- Do not break existing tests
+- Test coverage should increase
+```
+
+**Acceptance Criteria:**
+```
+- [ ] Test for DELETE endpoint 404 case is added
+- [ ] Test for PUT endpoint empty string validation is added
+- [ ] All tests pass
+- [ ] Tests can be run with npm test
+```
+
+3. Once the issue is created, click "Assign to Copilot" on the issue page.
+
+4. Copilot will automatically generate the test code and create a pull request.
+
+#### Example 2: Improving Error Messages
+
+1. Create a new issue on GitHub and select the "Refactoring Task (Copilot Agent Optimized)" template.
+
+2. Fill out the issue with the following content:
+
+**Title:**
+```
+[Refactor] Make error messages more detailed and user-friendly
+```
+
+**Purpose:**
+```
+Make API error responses more detailed and easier to understand for developers and users
+```
+
+**Problems:**
+```
+- Current error messages are too brief
+- Validation error details are insufficient
+- Error codes are not standardized
+```
+
+**Refactoring Goals:**
+```
+- Include detailed messages in error responses
+- Include specific field information for validation errors
+- Adopt a consistent error response format
+Example:
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input data",
+    "details": {
+      "field": "text",
+      "reason": "Text cannot be empty"
+    }
+  }
+}
+```
+
+**Target Files:**
+```
+- src/server.ts
+- src/types/errors.ts (may need to be created)
+```
+
+**Constraints:**
+```
+- Do not change HTTP status codes
+- Maintain existing client compatibility
+```
+
+**Acceptance Criteria:**
+```
+- [ ] All error responses follow a unified format
+- [ ] Validation errors include detailed information
+- [ ] Error codes are properly defined
+- [ ] All existing tests pass
+```
+
+3. Once the issue is created, click "Assign to Copilot" to request Copilot Agent to work on it.
 
 ## 🐛 Troubleshooting
 

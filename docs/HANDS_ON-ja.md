@@ -356,15 +356,124 @@ curl -X PUT http://localhost:3000/todos/[ID] \
 
 ### ステップ 5.5: さらなる改善
 
-Copilot に以下のような追加の改善を依頼することもできます:
+バグ修正後、さらなる改善を GitHub Issues を通じて Copilot Agent に依頼できます。
 
+#### 例1: テストカバレッジの向上
+
+1. GitHub で新しい issue を作成し、「Feature Request (Copilot Agent Optimized)」または「Bug Report (Copilot Agent Optimized)」テンプレートを選択します。
+
+2. 以下の内容で issue を記入します:
+
+**Title:**
 ```
-修正したバグに対するユニットテストを追加してください
+[Test] バリデーションバグ修正に対するユニットテストの追加
 ```
 
+**Feature Summary / Bug Summary:**
 ```
-エラーメッセージをより詳細にして、ユーザーフレンドリーにしてください
+DELETE と PUT エンドポイントのバリデーション修正に対する包括的なユニットテストを追加する
 ```
+
+**Steps to Reproduce / Current Behavior:**
+```
+現在、以下のエッジケースに対するテストが不足している:
+- DELETE /todos/:id で存在しないIDを指定した場合
+- PUT /todos/:id で空文字列のtextを送信した場合
+- PUT /todos/:id で非常に長いtextを送信した場合
+```
+
+**Expected Behavior / Feature Description:**
+```
+すべてのバリデーションケースをカバーするテストスイートが存在し、
+修正したバグが再発しないことを保証する
+```
+
+**Suspected Files / Target Files:**
+```
+- src/__tests__/server.test.ts (新規または既存)
+- src/server.ts
+```
+
+**Constraints:**
+```
+- 既存のテストを壊さない
+- テストカバレッジが向上すること
+```
+
+**Acceptance Criteria:**
+```
+- [ ] DELETE エンドポイントの404ケースのテストが追加されている
+- [ ] PUT エンドポイントの空文字列バリデーションテストが追加されている
+- [ ] すべてのテストがパスする
+- [ ] npm test でテストが実行できる
+```
+
+3. issue を作成したら、issue ページで「Assign to Copilot」をクリックします。
+
+4. Copilot が自動的にテストコードを生成し、プルリクエストを作成します。
+
+#### 例2: エラーメッセージの改善
+
+1. GitHub で新しい issue を作成し、「Refactoring Task (Copilot Agent Optimized)」テンプレートを選択します。
+
+2. 以下の内容で issue を記入します:
+
+**Title:**
+```
+[Refactor] エラーメッセージの詳細化とユーザーフレンドリー化
+```
+
+**Purpose:**
+```
+API のエラーレスポンスをより詳細で、開発者とユーザーにとってわかりやすいものにする
+```
+
+**Problems:**
+```
+- 現在のエラーメッセージが簡潔すぎる
+- バリデーションエラーの詳細が不足している
+- エラーコードが統一されていない
+```
+
+**Refactoring Goals:**
+```
+- エラーレスポンスに詳細なメッセージを含める
+- バリデーションエラーには具体的なフィールド情報を含める
+- 一貫したエラーレスポンス形式を採用する
+例:
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input data",
+    "details": {
+      "field": "text",
+      "reason": "Text cannot be empty"
+    }
+  }
+}
+```
+
+**Target Files:**
+```
+- src/server.ts
+- src/types/errors.ts (新規作成の可能性あり)
+```
+
+**Constraints:**
+```
+- HTTP ステータスコードは変更しない
+- 既存のクライアント互換性を維持する
+```
+
+**Acceptance Criteria:**
+```
+- [ ] すべてのエラーレスポンスが統一された形式になっている
+- [ ] バリデーションエラーに詳細情報が含まれている
+- [ ] エラーコードが適切に定義されている
+- [ ] 既存のテストがすべてパスする
+```
+
+3. issue を作成したら、「Assign to Copilot」をクリックして Copilot Agent に作業を依頼します。
 
 ## 🐛 トラブルシューティング
 
