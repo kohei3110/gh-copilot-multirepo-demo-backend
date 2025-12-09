@@ -194,6 +194,178 @@ todo リストエンドポイントにページネーションを実装します
 ### 演習 4: 検索エンドポイントを作成
 todo のタイトルと説明に全文検索機能を追加します。
 
+## 🐛 パート 5: GitHub Copilot Coding Agent でバグを修正
+
+このセクションでは、意図的に追加されたバグを GitHub Copilot Coding Agent を使って修正する方法を学びます。
+
+### ステップ 5.1: バグの存在を確認
+
+プロジェクトには2つの意図的なバグが含まれています:
+
+1. **Bug 1: DELETE エンドポイント** - 存在しないIDを削除しても404エラーを返さない
+2. **Bug 2: PUT エンドポイント** - 空文字列でTODOを更新できてしまう
+
+まず、サーバーを起動してバグを確認しましょう:
+
+```bash
+# サーバーを起動
+npm run dev
+```
+
+新しいターミナルを開いて、以下のコマンドでバグを確認:
+
+```bash
+# Bug 1のテスト: 存在しないIDを削除
+curl -X DELETE http://localhost:3000/todos/nonexistent-id -v
+
+# 期待: 404 Not Found
+# 実際: 204 No Content (バグ！)
+```
+
+```bash
+# Bug 2のテスト: 
+# 1. まずTODOを作成
+curl -X POST http://localhost:3000/todos \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Test Todo"}'
+
+# レスポンスのIDをメモ（例: "1733123456789"）
+
+# 2. 空文字列で更新
+curl -X PUT http://localhost:3000/todos/[上でメモしたID] \
+  -H "Content-Type: application/json" \
+  -d '{"text":""}'
+
+# 期待: 400 Bad Request
+# 実際: 200 OK (バグ！)
+```
+
+### ステップ 5.2: Copilot Coding Agent にバグ修正を依頼
+
+1. GitHub で issue を作成します。リポジトリの Issues タブから「New issue」をクリックし、「Bug Report (Copilot Agent Optimized)」テンプレートを選択します。
+
+2. ISSUE_TEMPLATE に従って、以下の内容で issue を記入します:
+
+**Title:**
+```
+[Bug] DELETE と PUT エンドポイントのバリデーション不備
+```
+
+**Bug Summary:**
+```
+`src/server.ts` に2つのバグがあります:
+
+1. **DELETE /todos/:id エンドポイント** - 存在しないIDに対して404を返さずに204を返してしまう
+2. **PUT /todos/:id エンドポイント** - 空文字列のtextを許可してしまう
+```
+
+**Steps to Reproduce:**
+```
+### Bug 1: DELETE エンドポイント
+# サーバーを起動
+npm run dev
+
+# 新しいターミナルで実行
+curl -X DELETE http://localhost:3000/todos/nonexistent-id -v
+
+### Bug 2: PUT エンドポイント
+# 1. まずTODOを作成
+curl -X POST http://localhost:3000/todos \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Test Todo"}'
+
+# 2. レスポンスのIDをメモして、空文字列で更新
+curl -X PUT http://localhost:3000/todos/[ID] \
+  -H "Content-Type: application/json" \
+  -d '{"text":""}'
+```
+
+**Expected Behavior:**
+```
+### Bug 1
+- 存在しないIDを削除しようとした場合: 404 Not Found を返し、エラーメッセージ {"error": "Todo not found"} を表示
+
+### Bug 2
+- 空文字列や空白のみのtextで更新しようとした場合: 400 Bad Request を返し、エラーメッセージ {"error": "Text cannot be empty"} を表示
+```
+
+**Actual Behavior:**
+```
+### Bug 1
+- 存在しないIDを削除: 204 No Content を返してしまう（バグ！）
+
+### Bug 2
+- 空文字列で更新: 200 OK を返してしまう（バグ！）
+```
+
+**Suspected Files:**
+```
+- src/server.ts - DELETE と PUT エンドポイントの実装箇所
+```
+
+**Constraints:**
+```
+- 既存のAPIレスポンス形式は維持すること
+- 他のエンドポイント（GET, POST）の動作に影響を与えないこと
+```
+
+**Acceptance Criteria:**
+```
+- [ ] DELETE /todos/:id が存在しないIDに対して404エラーを返す
+- [ ] DELETE /todos/:id が適切なエラーメッセージ {"error": "Todo not found"} を返す
+- [ ] PUT /todos/:id が空文字列のtextに対して400エラーを返す
+- [ ] PUT /todos/:id が空白のみのtextに対しても400エラーを返す
+- [ ] PUT /todos/:id が適切なエラーメッセージ {"error": "Text cannot be empty"} を返す
+- [ ] 修正後、再現手順でバグが発生しなくなる
+- [ ] 既存の正常系テストが引き続き通過する
+```
+
+3. Labels に `bug` を追加します。
+
+4. Issue を作成したら、その Issue に対して Copilot Coding Agent をアサインします。
+
+5. Copilot が修正案を提案したら、内容を確認して適用します。
+
+### ステップ 5.3: 修正を検証
+
+修正後、再度テストコマンドを実行して正しく動作することを確認:
+
+```bash
+# Bug 1の検証: 存在しないIDを削除
+curl -X DELETE http://localhost:3000/todos/nonexistent-id -v
+# 期待: 404 Not Found with {"error": "Todo not found"}
+
+# Bug 2の検証: 空文字列で更新
+curl -X POST http://localhost:3000/todos \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Test Todo"}'
+
+curl -X PUT http://localhost:3000/todos/[ID] \
+  -H "Content-Type: application/json" \
+  -d '{"text":""}'
+# 期待: 400 Bad Request with {"error": "Text cannot be empty"}
+```
+
+### ステップ 5.4: 学んだこと
+
+このエクササイズから学べること:
+
+- **問題の明確化**: バグの内容と期待される動作を明確に伝えることで、Copilot がより正確な修正を提案
+- **コンテキストの重要性**: ファイル名やエンドポイント名を具体的に指定することで、Copilot が正しい場所を特定
+- **検証の重要性**: 修正後は必ずテストを実行して、意図した通りに動作することを確認
+
+### ステップ 5.5: さらなる改善
+
+Copilot に以下のような追加の改善を依頼することもできます:
+
+```
+修正したバグに対するユニットテストを追加してください
+```
+
+```
+エラーメッセージをより詳細にして、ユーザーフレンドリーにしてください
+```
+
 ## 🐛 トラブルシューティング
 
 ### コンテナがビルドされない
@@ -205,7 +377,12 @@ todo のタイトルと説明に全文検索機能を追加します。
 - 拡張機能が有効か確認
 - VS Code の再読み込みを試す
 
+### バグ修正が期待通りに動作しない
+- サーバーを再起動してみる: `npm run dev`
+- Copilot の提案を再度確認し、必要に応じて追加の指示を与える
+
 ## 📚 ご参考
 
 - [GitHub Copilot ドキュメント](https://docs.github.com/ja/copilot)
+- [GitHub Copilot Coding Agent](https://docs.github.com/ja/copilot/using-github-copilot/using-copilot-coding-agent-to-work-on-tasks)
 - [copilot-orchestra](https://github.com/ShepAlderson/copilot-orchestra)

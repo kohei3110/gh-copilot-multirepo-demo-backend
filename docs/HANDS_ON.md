@@ -194,6 +194,178 @@ Implement pagination for the todo list endpoint.
 ### Exercise 4: Create a Search Endpoint
 Add full-text search capability for todo titles and descriptions.
 
+## 🐛 Part 5: Fixing Bugs with GitHub Copilot Coding Agent
+
+In this section, you'll learn how to use GitHub Copilot Coding Agent to fix intentionally added bugs.
+
+### Step 5.1: Verify the Bugs
+
+The project contains two intentional bugs:
+
+1. **Bug 1: DELETE endpoint** - Doesn't return 404 error when deleting non-existent ID
+2. **Bug 2: PUT endpoint** - Allows updating TODOs with empty strings
+
+First, start the server and verify the bugs:
+
+```bash
+# Start the server
+npm run dev
+```
+
+Open a new terminal and test the bugs:
+
+```bash
+# Test Bug 1: Delete non-existent ID
+curl -X DELETE http://localhost:3000/todos/nonexistent-id -v
+
+# Expected: 404 Not Found
+# Actual: 204 No Content (Bug!)
+```
+
+```bash
+# Test Bug 2:
+# 1. Create a TODO
+curl -X POST http://localhost:3000/todos \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Test Todo"}'
+
+# Note the ID from response (e.g., "1733123456789")
+
+# 2. Update with empty string
+curl -X PUT http://localhost:3000/todos/[ID-from-above] \
+  -H "Content-Type: application/json" \
+  -d '{"text":""}'
+
+# Expected: 400 Bad Request
+# Actual: 200 OK (Bug!)
+```
+
+### Step 5.2: Ask Copilot Coding Agent to Fix the Bugs
+
+1. Create an issue on GitHub. Navigate to the Issues tab in your repository, click "New issue", and select the "Bug Report (Copilot Agent Optimized)" template.
+
+2. Fill out the issue following the ISSUE_TEMPLATE with the following content:
+
+**Title:**
+```
+[Bug] Validation Issues in DELETE and PUT Endpoints
+```
+
+**Bug Summary:**
+```
+There are two bugs in `src/server.ts`:
+
+1. **DELETE /todos/:id endpoint** - Returns 204 instead of 404 for non-existent IDs
+2. **PUT /todos/:id endpoint** - Allows empty strings for text
+```
+
+**Steps to Reproduce:**
+```
+### Bug 1: DELETE endpoint
+# Start the server
+npm run dev
+
+# Execute in a new terminal
+curl -X DELETE http://localhost:3000/todos/nonexistent-id -v
+
+### Bug 2: PUT endpoint
+# 1. Create a TODO
+curl -X POST http://localhost:3000/todos \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Test Todo"}'
+
+# 2. Note the ID from response and update with empty string
+curl -X PUT http://localhost:3000/todos/[ID] \
+  -H "Content-Type: application/json" \
+  -d '{"text":""}'
+```
+
+**Expected Behavior:**
+```
+### Bug 1
+- When attempting to delete non-existent ID: Should return 404 Not Found with error message {"error": "Todo not found"}
+
+### Bug 2
+- When attempting to update with empty or whitespace-only text: Should return 400 Bad Request with error message {"error": "Text cannot be empty"}
+```
+
+**Actual Behavior:**
+```
+### Bug 1
+- Deleting non-existent ID: Returns 204 No Content (Bug!)
+
+### Bug 2
+- Updating with empty string: Returns 200 OK (Bug!)
+```
+
+**Suspected Files:**
+```
+- src/server.ts - Implementation of DELETE and PUT endpoints
+```
+
+**Constraints:**
+```
+- Maintain existing API response format
+- Do not affect the behavior of other endpoints (GET, POST)
+```
+
+**Acceptance Criteria:**
+```
+- [ ] DELETE /todos/:id returns 404 error for non-existent IDs
+- [ ] DELETE /todos/:id returns appropriate error message {"error": "Todo not found"}
+- [ ] PUT /todos/:id returns 400 error for empty text
+- [ ] PUT /todos/:id returns 400 error for whitespace-only text
+- [ ] PUT /todos/:id returns appropriate error message {"error": "Text cannot be empty"}
+- [ ] After fixes, bugs no longer occur when following reproduction steps
+- [ ] Existing positive test cases continue to pass
+```
+
+3. Add labels `bug`.
+
+4. After creating the issue, assign the Copilot Coding Agent to the issue.
+
+5. Review and apply the fixes when Copilot suggests solutions.
+
+### Step 5.3: Verify the Fixes
+
+After applying the fixes, test again to verify correct behavior:
+
+```bash
+# Verify Bug 1 fix: Delete non-existent ID
+curl -X DELETE http://localhost:3000/todos/nonexistent-id -v
+# Expected: 404 Not Found with {"error": "Todo not found"}
+
+# Verify Bug 2 fix: Update with empty string
+curl -X POST http://localhost:3000/todos \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Test Todo"}'
+
+curl -X PUT http://localhost:3000/todos/[ID] \
+  -H "Content-Type: application/json" \
+  -d '{"text":""}'
+# Expected: 400 Bad Request with {"error": "Text cannot be empty"}
+```
+
+### Step 5.4: Key Learnings
+
+From this exercise, you learn:
+
+- **Clear Communication**: Explicitly describing bugs and expected behavior helps Copilot provide accurate fixes
+- **Context Matters**: Specifying file names and endpoint names helps Copilot locate the right code
+- **Verification is Critical**: Always test after fixes to ensure intended behavior
+
+### Step 5.5: Further Improvements
+
+You can ask Copilot for additional improvements:
+
+```
+Add unit tests for the bug fixes
+```
+
+```
+Make error messages more detailed and user-friendly
+```
+
 ## 🐛 Troubleshooting
 
 ### Container Won't Build
@@ -205,8 +377,13 @@ Add full-text search capability for todo titles and descriptions.
 - Check extension is enabled
 - Try reloading VS Code
 
+### Bug Fixes Not Working as Expected
+- Restart the server: `npm run dev`
+- Review Copilot's suggestions and provide additional context if needed
+
 ## 📚 Additional Resources
 
 - [GitHub Copilot Documentation](https://docs.github.com/copilot)
+- [GitHub Copilot Coding Agent](https://docs.github.com/copilot/using-github-copilot/using-copilot-coding-agent-to-work-on-tasks)
 - [copilot-orchestra](https://github.com/ShepAlderson/copilot-orchestra)
 

@@ -52,6 +52,7 @@ app.put('/todos/:id', (req: Request, res: Response) => {
     return;
   }
 
+  // BUG: text が空文字列でも許可してしまう
   const todo = todos[todoIndex];
   if (text !== undefined) todo.text = text;
   if (completed !== undefined) todo.completed = completed;
@@ -62,6 +63,7 @@ app.put('/todos/:id', (req: Request, res: Response) => {
 // DELETE /todos/:id
 app.delete('/todos/:id', (req: Request, res: Response) => {
   const { id } = req.params;
+  // BUG: 存在しないIDでも常に204を返してしまう
   todos = todos.filter((t) => t.id !== id);
   res.status(204).send();
 });
