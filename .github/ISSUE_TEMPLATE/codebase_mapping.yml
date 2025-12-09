@@ -1,0 +1,37 @@
+name: "Codebase Mapping Task"
+description: "コードの依存関係・関係図を Copilot Agent に生成させるテンプレート"
+title: "[Mapping] "
+labels: ["architecture", "copilot-task"]
+
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose
+      placeholder: "例：UserService 周辺の構造を可視化し、オンボーディング資料にする"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope / Files
+      placeholder: "- backend/services/userService.ts\n- backend/repositories/userRepo.ts"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_output
+    attributes:
+      label: Expected Output
+      placeholder: "- 関連ファイル一覧\n- 呼び出し関係図\n- データフロー概要\n- 各関数の責務"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: "- 構造が一目で理解できる図と説明が生成されている"
+    validations:
+      required: true

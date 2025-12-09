@@ -1,0 +1,63 @@
+name: "Bug Report (Copilot Agent Optimized)"
+description: "Copilot Agent に修正させるためのバグ報告テンプレート"
+title: "[Bug] "
+labels: ["bug", "copilot-task"]
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Bug Summary
+      placeholder: "例：プロフィール更新 API が 500 を返す"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: "1. /mypage を開く\n2. displayName を変更\n3. 保存ボタンをクリック"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      placeholder: "例：プロフィールが正常に更新される"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      placeholder: "例：500 エラー、ログに 'id undefined' が出る"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      placeholder: "エラーログやスクリーンショットがあれば貼る"
+
+  - type: textarea
+    id: suspected_files
+    attributes:
+      label: Suspected Files
+      placeholder: "- backend/services/userService.ts\n- backend/repositories/userRepo.ts"
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      placeholder: "- API 仕様は変更しない\n- DB schema をいじらない"
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: "- 再現手順でバグが発生しなくなる\n- 回帰テストが通過"
+    validations:
+      required: true

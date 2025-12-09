@@ -1,0 +1,47 @@
+name: "Refactoring Task (Copilot Agent Optimized)"
+description: "責務分離・可読性向上などを Copilot Agent に依頼するテンプレート"
+title: "[Refactor] "
+labels: ["refactor", "copilot-task"]
+
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose
+      placeholder: "例：UserService を分割し、責務を明確にする"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problems
+    attributes:
+      label: Problems
+      placeholder: "- userService.ts が 800 行で肥大化\n- DB ロジックが混在している"
+
+  - type: textarea
+    id: goals
+    attributes:
+      label: Refactoring Goals
+      placeholder: "- Repository 化\n- ファイル分割\n- 挙動互換性 100% を維持"
+    validations:
+      required: true
+
+  - type: textarea
+    id: target_files
+    attributes:
+      label: Target Files
+      placeholder: "- backend/services/userService.ts\n- backend/repositories/userRepo.ts"
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      placeholder: "- API I/F は変更しない\n- 仕様の変更禁止"
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: "- 既存テストがすべて green\n- 責務分離が明確"
+    validations:
+      required: true

@@ -1,0 +1,35 @@
+name: "Documentation Task"
+description: "README、設計資料などの自動生成を Copilot Agent に依頼"
+title: "[Docs] "
+labels: ["documentation", "copilot-task"]
+
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Documentation Goal
+      placeholder: "例：UserService モジュールのアーキテクチャ説明 README を生成"
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      placeholder: "- モジュールの役割\n- クラス図\n- 依存関係\n- データフロー説明"
+    validations:
+      required: true
+
+  - type: textarea
+    id: target_files
+    attributes:
+      label: Target Files
+      placeholder: "- backend/services/userService.ts"
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: "- 初見エンジニアが10分で理解できる内容"
+    validations:
+      required: true

@@ -1,0 +1,41 @@
+name: "Technical Spike (Investigation)"
+description: "技術調査・パフォーマンス解析などを Copilot Agent に依頼"
+title: "[Spike] "
+labels: ["spike", "research", "copilot-task"]
+
+body:
+  - type: textarea
+    id: topic
+    attributes:
+      label: Topic
+      placeholder: "例：ログイン画面のパフォーマンス劣化の原因調査"
+    validations:
+      required: true
+
+  - type: textarea
+    id: goals
+    attributes:
+      label: Investigation Goals
+      placeholder: "1. ボトルネックの特定\n2. 改善案の比較\n3. 推奨案の提案"
+    validations:
+      required: true
+
+  - type: textarea
+    id: target_files
+    attributes:
+      label: Files to Analyze
+      placeholder: "- frontend/pages/login.vue\n- frontend/store/auth.ts"
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      placeholder: "- 実装は不要\n- 既存仕様は変更しない"
+
+  - type: textarea
+    id: output_format
+    attributes:
+      label: Expected Output Format
+      placeholder: "- 問題点一覧（表）\n- 原因推測\n- 改善案 3 つ\n- 最適案と理由"
+    validations:
+      required: true
