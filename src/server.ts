@@ -75,7 +75,7 @@ app.delete('/todos/:id', (req: Request, res: Response) => {
     return;
   }
   
-  todos = todos.filter((t) => t.id !== id);
+  todos.splice(todoIndex, 1);
   res.status(204).send();
 });
 
